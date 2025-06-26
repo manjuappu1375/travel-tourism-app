@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <!-- Meta tags for SEO -->
+    <meta name="title" content="TravelX - Explore the World with Ease" />
+    <meta name="description" content="Plan, book, and explore the best destinations. TravelX is your all-in-one travel companion." />
+    <meta name="keywords" content="travel, tourism, explore, vacation, tour booking, travel app" />
+    <meta name="author" content="TravelX Team" />
+
+    <!-- OpenGraph for social sharing -->
+    <meta property="og:title" content="TravelX" />
+    <meta property="og:description" content="Explore. Book. Travel. With TravelX, the world is at your fingertips." />
+    <meta property="og:image" content="/preview.png" />
+    <meta property="og:url" content="https://yourtravelapp.com" />
+    <meta property="og:type" content="website" />
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <title>TravelX – Explore. Book. Travel.</title>
+
+    <style>
+      body {
+        margin: 0;
+        font-family: 'Inter', system-ui, sans-serif;
+        background: linear-gradient(135deg, #e0f7ff, #f0eaff);
+        color: #1e293b;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+      }
+
+      #root {
+        width: 100%;
+      }
+
+      .loading-screen {
+        text-align: center;
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: #1e3a8a;
+      }
+    </style>
+  </head>
+  <body>
+    <noscript>
+      <div class="loading-screen">Please enable JavaScript to run this application.</div>
+    </noscript>
+    <div id="root">
+      <div class="loading-screen">Loading TravelX...</div>
+    </div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
