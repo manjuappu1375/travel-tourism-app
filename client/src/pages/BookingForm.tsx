@@ -1,114 +1,118 @@
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import styled from 'styled-components';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useState } from 'react';
+
+const Wrapper = styled.main`
+  padding: 2rem;
+  max-width: 600px;
+  margin: auto;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+`;
+
+const Title = styled.h2`
+  text-align: center;
+  color: #1e3a8a;
+`;
+
+const Form = styled.form`
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+`;
+
+const Input = styled.input`
+  padding: 0.75rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  font-size: 1rem;
+
+  &:focus {
+    border-color: #3b82f6;
+    outline: none;
+  }
+`;
+
+const SubmitBtn = styled.button`
+  padding: 0.75rem;
+  background: #10b981;
+  color: #fff;
+  font-weight: 500;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.2s;
+
+  &:hover {
+    background: #059669;
+  }
+`;
 
 const BookingForm = () => {
-  const navigate = useNavigate()
-  const [formData, setFormData] = useState({
-    fullName: '',
-    email: '',
-    phone: '',
-    guests: 1,
-    date: '',
-    specialRequests: '',
-  })
+  const { id } = useParams<{ id: string }>();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const tour = location.state?.tour;
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value })
-  }
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    guests: 1
+  });
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: name === 'guests' ? Number(value) : value
+    }));
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    console.log('Booking submitted:', formData)
-    // TODO: Send data to backend via Axios
-    navigate('/profile') // or navigate to a payment/success page
-  }
+    e.preventDefault();
+    alert(`Booking confirmed for ${formData.name} on tour: ${tour?.name || id}`);
+    navigate('/explore');
+  };
 
   return (
-    <div className="max-w-3xl mx-auto bg-white p-6 mt-10 shadow-md rounded-lg">
-      <h2 className="text-2xl font-semibold mb-4 text-indigo-600">Book Your Tour 🧳</h2>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label className="block font-medium text-gray-700">Full Name</label>
-          <input
-            type="text"
-            name="fullName"
-            value={formData.fullName}
-            onChange={handleChange}
-            className="mt-1 w-full border border-gray-300 rounded-md p-2"
-            required
-          />
-        </div>
+    <Wrapper>
+      <Title>Book Your Tour</Title>
+      {tour && (
+        <p style={{ textAlign: 'center', marginBottom: '1rem' }}>
+          <strong>{tour.name}</strong> — ${tour.price}
+        </p>
+      )}
+      <Form onSubmit={handleSubmit}>
+        <Input
+          type="text"
+          name="name"
+          placeholder="Your Name"
+          value={formData.name}
+          onChange={handleChange}
+          required
+        />
+        <Input
+          type="email"
+          name="email"
+          placeholder="Your Email"
+          value={formData.email}
+          onChange={handleChange}
+          required
+        />
+        <Input
+          type="number"
+          name="guests"
+          placeholder="Number of Guests"
+          value={formData.guests}
+          min={1}
+          onChange={handleChange}
+          required
+        />
+        <SubmitBtn type="submit">✅ Confirm Booking</SubmitBtn>
+      </Form>
+    </Wrapper>
+  );
+};
 
-        <div>
-          <label className="block font-medium text-gray-700">Email</label>
-          <input
-            type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            className="mt-1 w-full border border-gray-300 rounded-md p-2"
-            required
-          />
-        </div>
-
-        <div>
-          <label className="block font-medium text-gray-700">Phone Number</label>
-          <input
-            type="tel"
-            name="phone"
-            value={formData.phone}
-            onChange={handleChange}
-            className="mt-1 w-full border border-gray-300 rounded-md p-2"
-            required
-          />
-        </div>
-
-        <div>
-          <label className="block font-medium text-gray-700">Guests</label>
-          <select
-            name="guests"
-            value={formData.guests}
-            onChange={handleChange}
-            className="mt-1 w-full border border-gray-300 rounded-md p-2"
-          >
-            {[1, 2, 3, 4, 5].map((num) => (
-              <option key={num} value={num}>{num}</option>
-            ))}
-          </select>
-        </div>
-
-        <div>
-          <label className="block font-medium text-gray-700">Date</label>
-          <input
-            type="date"
-            name="date"
-            value={formData.date}
-            onChange={handleChange}
-            className="mt-1 w-full border border-gray-300 rounded-md p-2"
-            required
-          />
-        </div>
-
-        <div>
-          <label className="block font-medium text-gray-700">Special Requests</label>
-          <textarea
-            name="specialRequests"
-            value={formData.specialRequests}
-            onChange={handleChange}
-            rows={3}
-            className="mt-1 w-full border border-gray-300 rounded-md p-2"
-          />
-        </div>
-
-        <button
-          type="submit"
-          className="bg-indigo-600 text-white px-6 py-2 rounded-md hover:bg-indigo-700 transition"
-        >
-          Confirm Booking
-        </button>
-      </form>
-    </div>
-  )
-}
-
-export default BookingForm
+export default BookingForm;

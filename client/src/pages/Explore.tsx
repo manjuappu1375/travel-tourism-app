@@ -1,80 +1,179 @@
-import { useEffect, useState } from 'react'
+import styled from 'styled-components';
+import { Link, useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+import { motion } from 'framer-motion';
 
-interface Tour {
-  id: string
-  title: string
-  location: string
-  price: number
-  image: string
-}
+const ExploreWrapper = styled.main`
+  padding: 2rem;
+  background: #f8fafc;
+`;
 
-const Explore = () => {
-  const [tours, setTours] = useState<Tour[]>([])
-  const [loading, setLoading] = useState(true)
+const Filters = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
 
-  useEffect(() => {
-    // TODO: Replace with real API call
-    const fetchTours = async () => {
-      try {
-        // Simulating API call
-        const fakeData: Tour[] = [
-          {
-            id: '1',
-            title: 'Manali Mountain Adventure',
-            location: 'Himachal Pradesh, India',
-            price: 7999,
-            image: '/src/assets/banner.jpg',
-          },
-          {
-            id: '2',
-            title: 'Goa Beach Escape',
-            location: 'Goa, India',
-            price: 6999,
-            image: '/src/assets/banner.jpg',
-          },
-        ]
-        setTours(fakeData)
-        setLoading(false)
-      } catch (err) {
-        console.error('Error fetching tours', err)
-        setLoading(false)
+  input, select {
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    font-size: 0.95rem;
+
+    &:focus {
+      border-color: #3b82f6;
+      outline: none;
+    }
+  }
+`;
+
+const Grid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.5rem;
+`;
+
+const Card = styled(motion.div)`
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+
+  img {
+    width: 100%;
+    height: 160px;
+    object-fit: cover;
+  }
+
+  div {
+    padding: 0.75rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  h2 {
+    font-size: 1.2rem;
+    margin: 0 0 0.5rem 0;
+    color: #1e3a8a;
+  }
+
+  p {
+    font-size: 0.9rem;
+    color: #64748b;
+    margin: 0.25rem 0;
+  }
+
+  .actions {
+    margin-top: auto;
+    display: flex;
+    gap: 0.5rem;
+
+    a, button {
+      padding: 0.4rem 0.6rem;
+      border: none;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      text-decoration: none;
+      text-align: center;
+    }
+
+    a {
+      background: #3b82f6;
+      color: #fff;
+
+      &:hover {
+        background: #2563eb;
       }
     }
 
-    fetchTours()
-  }, [])
+    button {
+      background: #10b981;
+      color: #fff;
+
+      &:hover {
+        background: #059669;
+      }
+    }
+  }
+`;
+
+const mockTours = [
+  { id: '1', name: 'Paris Adventure', region: 'Europe', price: 1200, type: 'City', img: 'https://source.unsplash.com/400x300/?paris' },
+  { id: '2', name: 'Tokyo Explorer', region: 'Asia', price: 1500, type: 'City', img: 'https://source.unsplash.com/400x300/?tokyo' },
+  { id: '3', name: 'Dubai Luxury', region: 'Middle East', price: 1800, type: 'Luxury', img: 'https://source.unsplash.com/400x300/?dubai' },
+];
+
+const Explore = () => {
+  const navigate = useNavigate();
+  const [filters, setFilters] = useState({ search: '', region: '', type: '', price: '' });
+
+  const handleFilter = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    setFilters({ ...filters, [e.target.name]: e.target.value });
+  };
+
+  const filteredTours = mockTours.filter(tour =>
+    tour.name.toLowerCase().includes(filters.search.toLowerCase()) &&
+    (filters.region ? tour.region === filters.region : true) &&
+    (filters.type ? tour.type === filters.type : true) &&
+    (filters.price ? tour.price <= parseInt(filters.price) : true)
+  );
+
+  const handleBookNow = (tour: typeof mockTours[0]) => {
+    navigate(`/book/${tour.id}`, { state: { tour } });
+  };
 
   return (
-    <div className="p-6">
-      <h2 className="text-3xl font-bold text-indigo-700 mb-6 text-center">Explore Tours 🧭</h2>
+    <ExploreWrapper>
+      <Filters>
+        <input
+          type="text"
+          placeholder="Search"
+          name="search"
+          value={filters.search}
+          onChange={handleFilter}
+        />
+        <select name="region" value={filters.region} onChange={handleFilter}>
+          <option value="">All Regions</option>
+          <option value="Europe">Europe</option>
+          <option value="Asia">Asia</option>
+          <option value="Middle East">Middle East</option>
+        </select>
+        <select name="type" value={filters.type} onChange={handleFilter}>
+          <option value="">All Types</option>
+          <option value="City">City</option>
+          <option value="Luxury">Luxury</option>
+        </select>
+        <input
+          type="number"
+          placeholder="Max Price"
+          name="price"
+          value={filters.price}
+          onChange={handleFilter}
+        />
+      </Filters>
 
-      {loading ? (
-        <p className="text-center text-gray-600">Loading tours...</p>
-      ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-          {tours.map((tour) => (
-            <div
-              key={tour.id}
-              className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition"
-            >
-              <img src={tour.image} alt={tour.title} className="w-full h-48 object-cover" />
-              <div className="p-4">
-                <h3 className="text-xl font-semibold text-gray-800">{tour.title}</h3>
-                <p className="text-gray-500 text-sm">{tour.location}</p>
-                <p className="text-indigo-600 font-bold mt-2">₹{tour.price}</p>
-                <button
-                  onClick={() => alert('Go to details page')}
-                  className="mt-4 bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700"
-                >
-                  View Details
-                </button>
+      <Grid>
+        {filteredTours.map(tour => (
+          <Card key={tour.id} whileHover={{ scale: 1.03 }}>
+            <img src={tour.img} alt={tour.name} />
+            <div>
+              <h2>{tour.name}</h2>
+              <p>{tour.region} • {tour.type}</p>
+              <p>${tour.price}</p>
+              <div className="actions">
+                <Link to={`/tour/${tour.id}`}>View Details</Link>
+                <button onClick={() => handleBookNow(tour)}>Book Now</button>
               </div>
             </div>
-          ))}
-        </div>
-      )}
-    </div>
-  )
-}
+          </Card>
+        ))}
+      </Grid>
+    </ExploreWrapper>
+  );
+};
 
-export default Explore
+export default Explore;

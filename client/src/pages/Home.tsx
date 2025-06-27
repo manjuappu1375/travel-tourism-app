@@ -1,66 +1,117 @@
-// src/pages/Home.tsx
-import styled from 'styled-components'
-
-// Components for homepage sections
-import HeroSection from '../components/HeroSection'
-import InteractiveMap from '../components/InteractiveMap'
-import Testimonials from '../components/Testimonials'
-import BlogPreview from '../components/BlogPreview'
-import SocialFeed from '../components/SocialFeed'
-import BookingTracker from '../components/BookingTracker'
+import styled from 'styled-components';
+import { useState } from 'react';
 
 const Hero = styled.section`
   display: flex;
   flex-direction: column;
-  align-items: center;
   justify-content: center;
-  text-align: center;
+  align-items: center;
   padding: 4rem 2rem;
-  background: linear-gradient(to right, #e0e7ff, #f0f5ff);
+  background: linear-gradient(135deg, #3b82f6, #60a5fa);
+  color: #fff;
+  text-align: center;
   border-radius: 12px;
-  margin: 2rem auto;
-  max-width: 960px;
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
-`
+  margin: 2rem;
+`;
 
-const Title = styled.h2`
+const HeroTitle = styled.h1`
   font-size: 2.5rem;
-  color: #1e40af;
+  font-weight: 700;
   margin-bottom: 1rem;
-`
+`;
 
-const Subtitle = styled.p`
-  font-size: 1.125rem;
-  color: #374151;
-  max-width: 700px;
-`
+const HeroSubtitle = styled.p`
+  font-size: 1.25rem;
+  margin-bottom: 2rem;
+`;
 
-const Emoji = styled.span`
-  font-size: 2rem;
-  margin-left: 0.5rem;
-`
+const SearchForm = styled.form`
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+  flex-wrap: wrap;
+`;
+
+const SearchInput = styled.input`
+  padding: 0.75rem 1rem;
+  border: none;
+  border-radius: 8px;
+  width: 250px;
+  font-size: 1rem;
+`;
+
+const SearchButton = styled.button`
+  padding: 0.75rem 1.5rem;
+  background: #2563eb;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+
+  &:hover {
+    background: #1e40af;
+  }
+`;
+
+const Highlights = styled.section`
+  margin: 2rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+`;
+
+const HighlightCard = styled.div`
+  padding: 1rem;
+  background: #f9fafb;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  text-align: center;
+`;
 
 const Home = () => {
+  const [searchTerm, setSearchTerm] = useState('');
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchTerm.trim()) {
+      console.log(`Searching for: ${searchTerm}`);
+    }
+  };
+
   return (
     <>
       <Hero>
-        <Title>
-          Welcome to the Travel & Tourism Platform <Emoji>🧳</Emoji>
-        </Title>
-        <Subtitle>
-          Book your dream destinations, create wishlists, and explore the world with ease.
-        </Subtitle>
+        <HeroTitle>🌍 Discover Your Next Adventure</HeroTitle>
+        <HeroSubtitle>Explore unique destinations around the world with TravelX</HeroSubtitle>
+        <SearchForm onSubmit={handleSearch}>
+          <SearchInput
+            type="text"
+            placeholder="Search tours or places..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+          <SearchButton type="submit">Search</SearchButton>
+        </SearchForm>
       </Hero>
 
-      {/* Rest of homepage sections */}
-      <HeroSection />
-      <InteractiveMap />
-      <Testimonials />
-      <BlogPreview />
-      <SocialFeed />
-      <BookingTracker />
+      <Highlights>
+        <HighlightCard>
+          <h3>✨ Curated Tours</h3>
+          <p>Hand-picked destinations to match every vibe.</p>
+        </HighlightCard>
+        <HighlightCard>
+          <h3>🔥 Trending Spots</h3>
+          <p>See what’s hot this season across the globe.</p>
+        </HighlightCard>
+        <HighlightCard>
+          <h3>💬 Traveler Stories</h3>
+          <p>Get inspired by experiences shared by real travelers.</p>
+        </HighlightCard>
+      </Highlights>
     </>
-  )
-}
+  );
+};
 
-export default Home
+export default Home;
