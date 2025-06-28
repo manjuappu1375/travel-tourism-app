@@ -1,7 +1,6 @@
-import { useParams, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
-import { useEffect, useState } from 'react';
 
 const Wrapper = styled.main`
   padding: 2rem;
@@ -84,50 +83,33 @@ const Buttons = styled.div`
   }
 `;
 
-type Tour = {
-  id: string;
-  name: string;
-  region: string;
-  price: number;
-  description: string;
-  img: string;
-};
-
-const mockTours: Tour[] = [
-  { id: '1', name: 'Paris Adventure', region: 'Europe', price: 1200, description: 'Explore the city of love with guided tours and hidden gems.', img: 'https://source.unsplash.com/600x400/?paris' },
-  { id: '2', name: 'Tokyo Explorer', region: 'Asia', price: 1500, description: 'Discover Tokyo’s vibrant culture, food and nightlife.', img: 'https://source.unsplash.com/600x400/?tokyo' },
-  { id: '3', name: 'Dubai Luxury', region: 'Middle East', price: 1800, description: 'Experience ultimate luxury in Dubai with premium packages.', img: 'https://source.unsplash.com/600x400/?dubai' },
-];
-
 const TourDetails = () => {
-  const { id } = useParams<{ id: string }>();
+  const { state } = useLocation();
   const navigate = useNavigate();
-  const [tour, setTour] = useState<Tour | null>(null);
 
-  useEffect(() => {
-    const found = mockTours.find(t => t.id === id);
-    setTour(found || null);
-  }, [id]);
+  if (!state || !state.tour) {
+    return <Wrapper><p>❌ No tour data found. Please go back to Explore.</p></Wrapper>;
+  }
+
+  const tour = state.tour;
 
   const handleAddToCart = () => {
-    alert(`Added ${tour?.name} to cart!`);
+    alert(`Added ${tour.title} to cart!`);
   };
 
   const handleBookNow = () => {
-    navigate(`/book/${tour?.id}`, { state: { tour } });
+    navigate(`/book/${tour.id}`, { state: { tour } });
   };
-
-  if (!tour) return <Wrapper><p>Loading tour details...</p></Wrapper>;
 
   return (
     <Wrapper>
       <Card initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-        <img src={tour.img} alt={tour.name} />
+        <img src={tour.image} alt={tour.title} />
         <div>
-          <Title>{tour.name}</Title>
-          <Price>${tour.price}</Price>
+          <Title>{tour.title}</Title>
+          <Price>₹{tour.price.toLocaleString()}</Price>
           <Desc>{tour.description}</Desc>
-          <p>Region: {tour.region}</p>
+          <p>Location: {tour.location}</p>
           <Buttons>
             <button onClick={handleAddToCart}>🛒 Add to Cart</button>
             <button onClick={handleBookNow}>🚀 Book Now</button>

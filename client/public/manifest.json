@@ -1,0 +1,21 @@
+{
+  "name": "TravelX - Explore. Book. Travel.",
+  "short_name": "TravelX",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#e0f7ff",
+  "theme_color": "#3b82f6",
+  "description": "Plan, book, and explore the best destinations with TravelX.",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
