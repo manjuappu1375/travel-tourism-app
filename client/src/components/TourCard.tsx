@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
+import { FaHeart, FaRegHeart } from 'react-icons/fa';
 
 const Card = styled(motion.div)`
   background: #fff;
@@ -8,6 +9,7 @@ const Card = styled(motion.div)`
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  position: relative;
 
   img {
     width: 100%;
@@ -45,7 +47,6 @@ const Card = styled(motion.div)`
       border-radius: 6px;
       font-size: 0.85rem;
       cursor: pointer;
-      text-align: center;
       color: #fff;
     }
 
@@ -63,6 +64,30 @@ const Card = styled(motion.div)`
       }
     }
   }
+
+  .badge {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    background: #facc15;
+    color: #92400e;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+    font-weight: bold;
+    border-radius: 4px;
+  }
+
+  .wishlist-btn {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: #fff;
+    border-radius: 50%;
+    padding: 4px;
+    cursor: pointer;
+    color: #f43f5e;
+    border: none;
+  }
 `;
 
 interface TourCardProps {
@@ -71,6 +96,8 @@ interface TourCardProps {
   location: string;
   price: number;
   image: string;
+  isWishlisted: boolean;
+  onToggleWishlist: () => void;
   onViewDetails: () => void;
   onBookNow: () => void;
 }
@@ -80,11 +107,17 @@ const TourCard = ({
   location,
   price,
   image,
+  isWishlisted,
+  onToggleWishlist,
   onViewDetails,
   onBookNow,
 }: TourCardProps) => {
   return (
     <Card whileHover={{ scale: 1.03 }}>
+      <div className="badge">Top Pick</div>
+      <button className="wishlist-btn" onClick={onToggleWishlist}>
+        {isWishlisted ? <FaHeart /> : <FaRegHeart />}
+      </button>
       <img src={image} alt={title} />
       <div>
         <h2>{title}</h2>
@@ -92,10 +125,10 @@ const TourCard = ({
         <p>₹{price.toLocaleString()}</p>
         <div className="actions">
           <button className="details-btn" onClick={onViewDetails}>
-            View Details
+            View
           </button>
           <button className="book-btn" onClick={onBookNow}>
-            Book Now
+            Book
           </button>
         </div>
       </div>

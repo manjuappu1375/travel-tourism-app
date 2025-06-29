@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
+import { useWishlist } from '../contexts/WishlistContext';
 import TourCard from '../components/TourCard';
 
 const ExploreWrapper = styled.main`
@@ -33,15 +34,13 @@ const Grid = styled.div`
   gap: 1.5rem;
 `;
 
-const southIndiaTours = [
+const tours = [
   {
     id: 'kerala-backwaters',
     title: 'Kerala Backwaters Cruise',
     location: 'Alleppey, Kerala',
     price: 14500,
     image: '/assets/kerala-backwaters.jpg',
-    description: 'Enjoy a serene houseboat cruise through Kerala’s backwaters.',
-    region: 'South India',
   },
   {
     id: 'ooty-hills',
@@ -49,8 +48,6 @@ const southIndiaTours = [
     location: 'Ooty, Tamil Nadu',
     price: 12000,
     image: '/assets/ooty-hills.jpg',
-    description: 'Explore the lush green hills of Ooty and scenic viewpoints.',
-    region: 'South India',
   },
   {
     id: 'coorg-estate',
@@ -58,8 +55,6 @@ const southIndiaTours = [
     location: 'Coorg, Karnataka',
     price: 11000,
     image: '/assets/coorg-coffee.jpg',
-    description: 'Stay in a coffee estate and experience nature at its best.',
-    region: 'South India',
   },
   {
     id: 'pondy-beach',
@@ -67,19 +62,18 @@ const southIndiaTours = [
     location: 'Pondicherry',
     price: 9500,
     image: '/assets/pondicherry-beach.jpg',
-    description: 'Relax at Pondicherry’s beautiful beaches with French charm.',
-    region: 'South India',
   },
 ];
 
 const Explore = () => {
-  const navigate = useNavigate();
   const [search, setSearch] = useState('');
+  const navigate = useNavigate();
+  const { addToWishlist, removeFromWishlist, isWishlisted } = useWishlist();
 
-  const filteredTours = southIndiaTours.filter(
-    (tour) =>
-      tour.title.toLowerCase().includes(search.toLowerCase()) ||
-      tour.location.toLowerCase().includes(search.toLowerCase())
+  const filtered = tours.filter(
+    (t) =>
+      t.title.toLowerCase().includes(search.toLowerCase()) ||
+      t.location.toLowerCase().includes(search.toLowerCase())
   );
 
   return (
@@ -87,23 +81,22 @@ const Explore = () => {
       <Filters>
         <input
           type="text"
-          placeholder="Search South Indian Tours..."
+          placeholder="Search tours..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
       </Filters>
-
       <Grid>
-        {filteredTours.map((tour) => (
+        {filtered.map((t) => (
           <TourCard
-            key={tour.id}
-            id={tour.id}
-            title={tour.title}
-            location={tour.location}
-            price={tour.price}
-            image={tour.image}
-            onViewDetails={() => navigate(`/tour/${tour.id}`, { state: { tour } })}
-            onBookNow={() => navigate(`/book/${tour.id}`, { state: { tour } })}
+            key={t.id}
+            {...t}
+            isWishlisted={isWishlisted(t.id)}
+            onToggleWishlist={() =>
+              isWishlisted(t.id) ? removeFromWishlist(t.id) : addToWishlist(t)
+            }
+            onViewDetails={() => navigate(`/tour/${t.id}`)}
+            onBookNow={() => navigate(`/book/${t.id}`)}
           />
         ))}
       </Grid>
