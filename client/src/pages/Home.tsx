@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 const Hero = styled.section`
   display: flex;
@@ -73,10 +73,22 @@ const HighlightCard = styled.div`
 const Home = () => {
   const [searchTerm, setSearchTerm] = useState('');
 
+  // ✅ Backend connection check
+  useEffect(() => {
+    fetch('http://localhost:5000/api/health')  // replace with your backend health route
+      .then(res => {
+        if (!res.ok) throw new Error('Server error');
+        return res.json();
+      })
+      .then(data => console.log('✅ Backend connected:', data))
+      .catch(err => console.error('❌ Backend connection failed:', err.message));
+  }, []);
+
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchTerm.trim()) {
       console.log(`Searching for: ${searchTerm}`);
+      // In future: navigate to /search?q=searchTerm
     }
   };
 
